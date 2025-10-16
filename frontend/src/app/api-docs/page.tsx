@@ -237,14 +237,14 @@ curl -X POST https://api.proofofbuild.io/verify \\
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <h4 className="font-bold text-[#8B7355] mb-2">Parameters</h4>
+                      <h4 className="font-bold text-black mb-2">Parameters</h4>
                       <div className="space-y-2">
                         {endpoint.parameters.map((param, i) => (
                           <div key={i} className="text-sm">
-                            <span className="font-mono bg-gray-100 px-2 py-1 rounded">{param.name}</span>
-                            <span className="text-gray-600 ml-2">({param.type})</span>
+                            <span className="font-mono bg-gray-100 px-2 py-1 rounded text-black">{param.name}</span>
+                            <span className="text-black ml-2">({param.type})</span>
                             {param.required && <span className="text-red-500 ml-1">*</span>}
-                            <p className="text-gray-600 mt-1">{param.description}</p>
+                            <p className="text-black mt-1">{param.description}</p>
                           </div>
                         ))}
                       </div>
@@ -269,16 +269,16 @@ curl -X POST https://api.proofofbuild.io/verify \\
                 <h2 className="text-2xl font-black text-[#8B7355] mb-6">Available SDKs</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="bg-white p-4 rounded-lg border border-[#8B7355]">
-                    <h3 className="font-bold text-[#8B7355] mb-2">JavaScript/TypeScript</h3>
-                    <code className="text-sm bg-gray-100 p-2 rounded block">npm install @proofofbuild/sdk</code>
+                    <h3 className="font-bold text-black mb-2">JavaScript/TypeScript</h3>
+                    <code className="text-sm bg-gray-100 p-2 rounded block text-black">npm install @proofofbuild/sdk</code>
                   </div>
                   <div className="bg-white p-4 rounded-lg border border-[#8B7355]">
-                    <h3 className="font-bold text-[#8B7355] mb-2">Python</h3>
-                    <code className="text-sm bg-gray-100 p-2 rounded block">pip install proofofbuild</code>
+                    <h3 className="font-bold text-black mb-2">Python</h3>
+                    <code className="text-sm bg-gray-100 p-2 rounded block text-black">pip install proofofbuild</code>
                   </div>
                   <div className="bg-white p-4 rounded-lg border border-[#8B7355]">
-                    <h3 className="font-bold text-[#8B7355] mb-2">Go</h3>
-                    <code className="text-sm bg-gray-100 p-2 rounded block">go get github.com/proofofbuild/sdk-go</code>
+                    <h3 className="font-bold text-black mb-2">Go</h3>
+                    <code className="text-sm bg-gray-100 p-2 rounded block text-black">go get github.com/proofofbuild/sdk-go</code>
                   </div>
                 </div>
               </div>

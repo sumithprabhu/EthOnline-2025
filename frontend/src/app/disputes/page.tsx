@@ -138,15 +138,15 @@ export default function Disputes() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
                           <h4 className="font-bold text-black mb-1">Claimant</h4>
-                          <p className="text-sm font-mono">{dispute.claimant}</p>
+                          <p className="text-sm font-mono text-black">{dispute.claimant}</p>
                         </div>
                         <div>
                           <h4 className="font-bold text-black mb-1">Defendant</h4>
-                          <p className="text-sm font-mono">{dispute.defendant}</p>
+                          <p className="text-sm font-mono text-black">{dispute.defendant}</p>
                         </div>
                         <div>
                           <h4 className="font-bold text-black mb-1">Evidence</h4>
-                          <p className="text-sm">{dispute.evidence}</p>
+                          <p className="text-sm text-black">{dispute.evidence}</p>
                         </div>
                       </div>
                       
@@ -184,7 +184,7 @@ export default function Disputes() {
                     value={newDispute.projectId}
                     onChange={(e) => setNewDispute({...newDispute, projectId: e.target.value})}
                     placeholder="0x1234...5678"
-                    className="w-full p-4 border-2 border-[#8B7355] rounded-lg focus:outline-none focus:border-[#8B7355]"
+                    className="w-full p-4 border-2 border-[#8B7355] rounded-lg focus:outline-none focus:border-[#8B7355] text-black"
                     required
                   />
                 </div>
@@ -196,7 +196,7 @@ export default function Disputes() {
                     onChange={(e) => setNewDispute({...newDispute, description: e.target.value})}
                     placeholder="Describe the alleged plagiarism or code reuse..."
                     rows={4}
-                    className="w-full p-4 border-2 border-[#8B7355] rounded-lg focus:outline-none focus:border-[#8B7355]"
+                    className="w-full p-4 border-2 border-[#8B7355] rounded-lg focus:outline-none focus:border-[#8B7355] text-black"
                     required
                   />
                 </div>
@@ -208,7 +208,7 @@ export default function Disputes() {
                     onChange={(e) => setNewDispute({...newDispute, evidence: e.target.value})}
                     placeholder="Provide evidence of plagiarism (similarity scores, code snippets, timestamps, etc.)"
                     rows={6}
-                    className="w-full p-4 border-2 border-[#8B7355] rounded-lg focus:outline-none focus:border-[#8B7355]"
+                    className="w-full p-4 border-2 border-[#8B7355] rounded-lg focus:outline-none focus:border-[#8B7355] text-black"
                     required
                   />
                 </div>
