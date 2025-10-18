@@ -1,32 +1,151 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-export default function Dashboard() {
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [verificationResult, setVerificationResult] = useState<any>(null);
+interface Project {
+  id: string;
+  name: string;
+  repoUrl: string;
+  description: string;
+  status: 'pending' | 'processing' | 'verified' | 'flagged';
+  score?: number;
+  createdAt: string;
+}
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    setUploadedFiles(prev => [...prev, ...files]);
+export default function Dashboard() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    name: '',
+    repoUrl: '',
+    description: ''
+  });
+
+  // Load projects on component mount
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/projects');
+      if (response.ok) {
+        const data = await response.json();
+        setProjects(data.projects);
+      } else {
+        console.error('Failed to load projects');
+        // Fallback to empty array if API fails
+        setProjects([]);
+      }
+    } catch (error) {
+      console.error('Error loading projects:', error);
+      // Fallback to empty array if API fails
+      setProjects([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleVerification = async () => {
-    setIsProcessing(true);
-    // Simulate processing
-    setTimeout(() => {
-      setVerificationResult({
-        projectId: '0x1234...5678',
-        merkleRoot: '0xabcd...efgh',
-        timestamp: new Date().toISOString(),
-        plagiarismScore: 0.02,
-        status: 'verified'
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/projects/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
-      setIsProcessing(false);
-    }, 3000);
+
+      if (response.ok) {
+        const result = await response.json();
+        // Add the new project to the list
+        const newProject: Project = {
+          id: result.id,
+          name: formData.name,
+          repoUrl: formData.repoUrl,
+          description: formData.description,
+          status: 'pending',
+          createdAt: new Date().toISOString()
+        };
+        setProjects(prev => [newProject, ...prev]);
+        
+        // Reset form
+        setFormData({ name: '', repoUrl: '', description: '' });
+        setShowAddForm(false);
+      } else {
+        console.error('Failed to register project');
+      }
+    } catch (error) {
+      console.error('Error registering project:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'verified': return 'bg-green-100 text-green-800';
+      case 'processing': return 'bg-blue-100 text-blue-800';
+      case 'flagged': return 'bg-red-100 text-red-800';
+      default: return 'bg-yellow-100 text-yellow-800';
+    }
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    if (!confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/projects/${projectId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // Remove the project from the list
+        setProjects(prev => prev.filter(project => project.id !== projectId));
+      } else {
+        console.error('Failed to delete project');
+        alert('Failed to delete project. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      alert('Error deleting project. Please try again.');
+    }
+  };
+
+  const handleViewDetails = async (projectId: string) => {
+    try {
+      const response = await fetch(`/api/projects/${projectId}`);
+      if (response.ok) {
+        const project = await response.json();
+        // For now, just show an alert with project details
+        // In a real app, you'd open a modal or navigate to a details page
+        alert(`Project Details:\n\nName: ${project.name}\nRepository: ${project.repoUrl}\nDescription: ${project.description}\nStatus: ${project.status}\nScore: ${project.score ? (project.score * 100).toFixed(1) + '%' : 'N/A'}\nCreated: ${new Date(project.createdAt).toLocaleString()}`);
+      } else {
+        console.error('Failed to fetch project details');
+      }
+    } catch (error) {
+      console.error('Error fetching project details:', error);
+    }
   };
 
   return (
@@ -35,7 +154,7 @@ export default function Dashboard() {
       <div className="absolute top-6 left-6 z-10">
         <Link href="/" className="focus:outline-none">
           <div className="bg-[#8B7355] border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] px-6 py-3 rounded-lg cursor-pointer">
-            <h1 className="text-2xl font-black text-white">🔐 Proof of Build</h1>
+            <h1 className="text-2xl font-black text-white">🔐 POBU</h1>
           </div>
         </Link>
       </div>
@@ -55,103 +174,180 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <div className="pt-24 pb-8 px-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-black text-[#8B7355] mb-4">Project Verification Dashboard</h1>
-            <p className="text-lg text-black/80">Upload your codebase to generate cryptographic fingerprints and verify authorship</p>
+            <h1 className="text-4xl font-black text-[#8B7355] mb-4">Project Dashboard</h1>
+            <p className="text-lg text-black/80">Manage your projects and track their verification status</p>
           </div>
 
-          {/* Upload Section */}
-          <div className="bg-[#FFF8E7] border-2 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 rounded-2xl mb-8">
-            <h2 className="text-2xl font-black mb-6 text-[#8B7355]">Upload Your Project</h2>
-            
-            <div className="border-2 border-dashed border-[#8B7355] rounded-lg p-8 text-center mb-6">
-              <input
-                type="file"
-                multiple
-                onChange={handleFileUpload}
-                className="hidden"
-                id="file-upload"
-                accept=".js,.ts,.jsx,.tsx,.py,.java,.cpp,.c,.cs,.php,.rb,.go,.rs,.sol"
-              />
-              <label htmlFor="file-upload" className="cursor-pointer">
-                <div className="text-6xl mb-4">📁</div>
-                <p className="text-lg font-bold text-[#8B7355] mb-2">Drop your files here or click to browse</p>
-                <p className="text-sm text-black/60">Supports: JS, TS, Python, Java, C++, Solidity, and more</p>
-              </label>
-            </div>
-
-            {uploadedFiles.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-lg font-bold mb-3">Uploaded Files ({uploadedFiles.length})</h3>
-                <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {uploadedFiles.map((file, index) => (
-                    <div key={index} className="flex items-center justify-between bg-white p-3 rounded-lg border border-[#8B7355]">
-                      <span className="text-sm font-medium">{file.name}</span>
-                      <span className="text-xs text-black/60">{(file.size / 1024).toFixed(1)} KB</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
+          {/* Add Project Button */}
+          <div className="mb-8 text-center">
             <button
-              onClick={handleVerification}
-              disabled={uploadedFiles.length === 0 || isProcessing}
-              className="w-full bg-[#8B7355] border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] px-8 py-4 rounded-lg text-xl font-bold text-white hover:bg-[#8B7355]/90 hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => setShowAddForm(!showAddForm)}
+              className="bg-[#8B7355] border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] px-8 py-4 rounded-lg text-xl font-bold text-white hover:bg-[#8B7355]/90 hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
             >
-              {isProcessing ? 'Processing...' : 'Generate Proof of Build'}
+              {showAddForm ? 'Cancel' : '+ Add New Project'}
             </button>
           </div>
 
-          {/* Results Section */}
-          {verificationResult && (
+          {/* Add Project Form */}
+          {showAddForm && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-[#FFF8E7] border-2 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 rounded-2xl"
+              className="bg-[#FFF8E7] border-2 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 rounded-2xl mb-8"
             >
-              <h2 className="text-2xl font-black mb-6 text-[#8B7355]">Verification Results</h2>
+              <h2 className="text-2xl font-black mb-6 text-[#8B7355]">Add New Project</h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white p-4 rounded-lg border border-[#8B7355]">
-                  <h3 className="font-bold text-[#8B7355] mb-2">Project ID</h3>
-                  <p className="text-sm font-mono">{verificationResult.projectId}</p>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-bold text-[#8B7355] mb-2">
+                    Project Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                    placeholder="Enter project name"
+                  />
                 </div>
-                
-                <div className="bg-white p-4 rounded-lg border border-[#8B7355]">
-                  <h3 className="font-bold text-[#8B7355] mb-2">Merkle Root</h3>
-                  <p className="text-sm font-mono">{verificationResult.merkleRoot}</p>
-                </div>
-                
-                <div className="bg-white p-4 rounded-lg border border-[#8B7355]">
-                  <h3 className="font-bold text-[#8B7355] mb-2">Timestamp</h3>
-                  <p className="text-sm">{new Date(verificationResult.timestamp).toLocaleString()}</p>
-                </div>
-                
-                <div className="bg-white p-4 rounded-lg border border-[#8B7355]">
-                  <h3 className="font-bold text-[#8B7355] mb-2">Plagiarism Score</h3>
-                  <p className="text-sm">
-                    <span className={`px-2 py-1 rounded text-xs font-bold ${
-                      verificationResult.plagiarismScore < 0.1 ? 'bg-green-100 text-green-800' : 
-                      verificationResult.plagiarismScore < 0.3 ? 'bg-yellow-100 text-yellow-800' : 
-                      'bg-red-100 text-red-800'
-                    }`}>
-                      {(verificationResult.plagiarismScore * 100).toFixed(1)}%
-                    </span>
-                  </p>
-                </div>
-              </div>
 
-              <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <div className="flex items-center">
-                  <span className="text-green-600 text-xl mr-2">✅</span>
-                  <span className="font-bold text-green-800">Project Successfully Verified!</span>
+                <div>
+                  <label htmlFor="repoUrl" className="block text-sm font-bold text-[#8B7355] mb-2">
+                    GitHub Repository URL *
+                  </label>
+                  <input
+                    type="url"
+                    id="repoUrl"
+                    name="repoUrl"
+                    value={formData.repoUrl}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                    placeholder="https://github.com/username/repository"
+                  />
                 </div>
-                <p className="text-sm text-green-700 mt-1">Your project has been anchored on-chain as an immutable attestation.</p>
-              </div>
+
+                <div>
+                  <label htmlFor="description" className="block text-sm font-bold text-[#8B7355] mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows={4}
+                    className="w-full px-4 py-3 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                    placeholder="Describe your project..."
+                  />
+                </div>
+
+                <div className="flex gap-4">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex-1 bg-[#8B7355] border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] px-8 py-4 rounded-lg text-xl font-bold text-white hover:bg-[#8B7355]/90 hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? 'Adding Project...' : 'Add Project'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddForm(false)}
+                    className="flex-1 bg-white border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] px-8 py-4 rounded-lg text-xl font-bold text-black hover:bg-gray-50 hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
             </motion.div>
           )}
+
+          {/* Projects List */}
+          <div className="bg-[#FFF8E7] border-2 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 rounded-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-black text-[#8B7355]">Your Projects</h2>
+              <button
+                onClick={loadProjects}
+                disabled={isLoading}
+                className="bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] px-4 py-2 rounded-lg hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 text-sm font-bold text-black disabled:opacity-50"
+              >
+                {isLoading ? 'Refreshing...' : 'Refresh'}
+              </button>
+            </div>
+
+            {isLoading ? (
+              <div className="text-center py-8">
+                <div className="text-4xl mb-4">⏳</div>
+                <p className="text-lg text-black/60">Loading projects...</p>
+              </div>
+            ) : projects.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="text-6xl mb-4">📁</div>
+                <h3 className="text-xl font-bold text-[#8B7355] mb-2">No Projects Yet</h3>
+                <p className="text-black/60 mb-4">Add your first project to get started with verification</p>
+                <button
+                  onClick={() => setShowAddForm(true)}
+                  className="bg-[#8B7355] border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] px-6 py-3 rounded-lg text-lg font-bold text-white hover:bg-[#8B7355]/90 hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
+                >
+                  Add Project
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {projects.map((project) => (
+                  <motion.div
+                    key={project.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] p-6 rounded-lg hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-200"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-[#8B7355] mb-2">{project.name}</h3>
+                        <p className="text-sm text-black/60 mb-2">{project.repoUrl}</p>
+                        {project.description && (
+                          <p className="text-black/80">{project.description}</p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className={`px-3 py-1 rounded-full text-sm font-bold ${getStatusColor(project.status)}`}>
+                          {getStatusIcon(project.status)} {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                        </span>
+                        {project.score && (
+                          <span className="text-sm font-bold text-[#8B7355]">
+                            Score: {(project.score * 100).toFixed(1)}%
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between text-sm text-black/60">
+                      <span>Created: {new Date(project.createdAt).toLocaleDateString()}</span>
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => handleViewDetails(project.id)}
+                          className="text-[#8B7355] hover:text-[#8B7355]/80 font-bold"
+                        >
+                          View Details
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteProject(project.id)}
+                          className="text-red-600 hover:text-red-800 font-bold"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
