@@ -122,7 +122,7 @@ export default function Disputes() {
                       <div className="flex justify-between items-start mb-4">
                         <div>
                           <h3 className="text-lg font-bold text-[#8B7355]">Dispute #{dispute.id}</h3>
-                          <p className="text-sm text-black/60">Project: {dispute.projectId}</p>
+                          <p className="text-sm text-black/60">Project-ID: {dispute.projectId}</p>
                         </div>
                         <span className={`px-3 py-1 rounded text-xs font-bold ${
                           dispute.status === 'active' ? 'bg-yellow-100 text-yellow-800' :
@@ -220,7 +220,7 @@ export default function Disputes() {
                   type="submit"
                   className="w-full bg-[#8B7355] border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] px-8 py-4 rounded-lg text-xl font-bold text-white hover:bg-[#8B7355]/90 hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
                 >
-                  Submit Dispute
+                  Stake 5 PUSD & Submit Dispute
                 </button>
               </form>
             </div>
