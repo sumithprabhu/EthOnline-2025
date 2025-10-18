@@ -138,7 +138,7 @@ curl -X POST https://api.proofofbuild.io/verify \\
       <div className="absolute top-6 left-6 z-10">
         <Link href="/" className="focus:outline-none">
           <div className="bg-[#8B7355] border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] px-6 py-3 rounded-lg cursor-pointer">
-            <h1 className="text-2xl font-black text-white">🔐 Proof of Build</h1>
+            <h1 className="text-2xl font-black text-white">🔐 POBU</h1>
           </div>
         </Link>
       </div>
@@ -148,8 +148,8 @@ curl -X POST https://api.proofofbuild.io/verify \\
         <Link href="/dashboard" className="bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] px-4 py-2 rounded-lg hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 text-sm font-bold text-black">
           Dashboard
         </Link>
-        <Link href="/about" className="bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] px-4 py-2 rounded-lg hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 text-sm font-bold text-black">
-          About
+        <Link href="/dashboard" className="bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] px-4 py-2 rounded-lg hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 text-sm font-bold text-black">
+          Dashboard
         </Link>
         <Link href="/disputes" className="bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] px-4 py-2 rounded-lg hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 text-sm font-bold text-black">
           Disputes
@@ -161,7 +161,7 @@ curl -X POST https://api.proofofbuild.io/verify \\
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-black text-[#8B7355] mb-4">API Documentation</h1>
-            <p className="text-lg text-black/80">Integrate Proof of Build into your hackathon platform or application</p>
+            <p className="text-lg text-black/80">Integrate POBU into your hackathon platform or application</p>
           </div>
 
           {/* Tabs */}
@@ -189,7 +189,7 @@ curl -X POST https://api.proofofbuild.io/verify \\
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-lg font-bold text-black mb-2">1. Get API Key</h3>
-                    <p className="text-black/80">Sign up for a free API key to start integrating Proof of Build into your platform.</p>
+                    <p className="text-black/80">Sign up for a free API key to start integrating POBU into your platform.</p>
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-black mb-2">2. Choose Integration Method</h3>
@@ -205,7 +205,7 @@ curl -X POST https://api.proofofbuild.io/verify \\
               <div className="bg-[#8B7355] border-2 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 rounded-2xl">
                 <h2 className="text-2xl font-black text-white mb-6">Base URL</h2>
                 <div className="bg-black p-4 rounded-lg">
-                  <code className="text-green-400 font-mono text-lg">https://api.proofofbuild.io</code>
+                  <code className="text-green-400 font-mono text-lg">https://api.pobu.io</code>
                 </div>
                 <p className="text-white/80 mt-4">All API requests should be made to this base URL with appropriate headers and authentication.</p>
               </div>
@@ -344,7 +344,7 @@ curl -X POST https://api.proofofbuild.io/verify \\
           {/* CTA Section */}
           <div className="text-center mt-16">
             <h2 className="text-3xl font-black text-[#8B7355] mb-6">Ready to Integrate?</h2>
-            <p className="text-lg text-black/80 mb-8">Start building with Proof of Build today</p>
+            <p className="text-lg text-black/80 mb-8">Start building with POBU today</p>
             <div className="flex gap-4 justify-center">
               <Link href="/dashboard">
                 <button className="bg-[#8B7355] border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] px-8 py-4 rounded-lg text-xl font-bold text-white hover:bg-[#8B7355]/90 hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200">

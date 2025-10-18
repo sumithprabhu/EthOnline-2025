@@ -6,8 +6,8 @@ import { motion } from 'framer-motion';
 
 const faqs = [
   {
-    q: 'What is Proof of Build?',
-    a: 'Proof of Build is a decentralized authorship and plagiarism verification protocol designed to safeguard originality in hackathon and open-source projects. It generates cryptographic fingerprints of codebases and anchors them on-chain as immutable attestations.'
+    q: 'What is POBU?',
+    a: 'POBU is a decentralized authorship and plagiarism verification protocol designed to safeguard originality in hackathon and open-source projects. It generates cryptographic fingerprints of codebases and anchors them on-chain as immutable attestations.'
   },
   {
     q: 'How does plagiarism detection work?',
@@ -53,15 +53,15 @@ export default function Landing() {
       <div className="absolute top-6 left-6 z-10">
         <Link href="/" className="focus:outline-none">
           <div className="bg-[#8B7355] border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] px-6 py-3 rounded-lg cursor-pointer">
-            <h1 className="text-2xl font-black text-white">🔐 Proof of Build</h1>
+            <h1 className="text-2xl font-black text-white">🔐 POBU</h1>
           </div>
         </Link>
       </div>
 
       {/* NAVIGATION LINKS */}
       <div className="absolute top-6 right-6 z-10 flex gap-3">
-        <Link href="/about" className="bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] px-4 py-2 rounded-lg hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 text-sm font-bold text-black">
-          About
+        <Link href="/dashboard" className="bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] px-4 py-2 rounded-lg hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 text-sm font-bold text-black">
+          Dashboard
         </Link>
         <Link href="/api-docs" className="bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] px-4 py-2 rounded-lg hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 text-sm font-bold text-black">
           API Docs
@@ -79,7 +79,7 @@ export default function Landing() {
             <div className="text-center">
               <p className="text-sm font-black mb-8 text-white bg-black px-3 py-2 rounded-lg inline-block">Decentralized Authorship & Plagiarism Verification</p>
               <h3 className="text-5xl font-bold font-black text-white italic mb-2">
-                PROOF OF BUILD Protocol
+                POBU Protocol
               </h3>
               <h2 className="text-5xl font-black mb-2 text-[#8B7355] bg-[#FFF8E7] px-3 py-2 rounded-lg inline-block italic">for Hackathons & Open Source</h2>
             </div>
@@ -101,8 +101,8 @@ export default function Landing() {
         <div className="grid grid-cols-12 gap-6 auto-rows-[180px]">
           {/* Why Proof of Build */}
           <div className="col-span-12 md:col-span-6 row-span-2 bg-[#FFF8E7] border-2 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 rounded-2xl flex flex-col justify-center">
-            <h2 className="text-xl font-black mb-4 text-white bg-[#8B7355] px-3 py-2 rounded-lg inline-block">Why Proof of Build</h2>
-            <p className="text-sm text-black leading-relaxed">Proof of Build safeguards originality in hackathon and open-source projects by generating cryptographic fingerprints of codebases and anchoring them on-chain as immutable attestations. This ensures transparent project verification and protects against plagiarism.</p>
+            <h2 className="text-xl font-black mb-4 text-white bg-[#8B7355] px-3 py-2 rounded-lg inline-block">Why POBU</h2>
+            <p className="text-sm text-black leading-relaxed">POBU safeguards originality in hackathon and open-source projects by generating cryptographic fingerprints of codebases and anchoring them on-chain as immutable attestations. This ensures transparent project verification and protects against plagiarism.</p>
           </div>
           {/* Core Features */}
           <div className="col-span-12 md:col-span-6 row-span-2 bg-[#8B7355] border-2 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 rounded-2xl flex flex-col justify-center">

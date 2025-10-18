@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Proof of Build - Decentralized Authorship Verification",
-  description: "Proof of Build is a decentralized authorship and plagiarism verification protocol designed to safeguard originality in hackathon and open-source projects.",
+  title: "POBU - Decentralized Authorship Verification",
+  description: "POBU is a decentralized authorship and plagiarism verification protocol designed to safeguard originality in hackathon and open-source projects.",
 };
 
 export default function RootLayout({
