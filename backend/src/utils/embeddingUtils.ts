@@ -1,28 +1,17 @@
-// src/utils/embeddingUtils.ts
-import crypto from "crypto";
+import OpenAI from "openai";
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 
-/**
- * Temporary local embedding generator.
- * For production, replace with OpenAI or CodeBERT embeddings.
- */
-export async function generateEmbedding(code: string): Promise<string> {
-  // Simple hash-based pseudo-embedding (placeholder)
-  return crypto.createHash("sha256").update(code).digest("hex");
-}
+export const generateEmbedding = async (code: string): Promise<number[]> => {
+  const res = await openai.embeddings.create({
+    model: "text-embedding-3-small",
+    input: code.slice(0, 8000),
+  });
+  return res.data[0].embedding;
+};
 
-/**
- * Compute cosine similarity between two embeddings (as hex strings)
- */
-export function cosineSimilarity(hashA: string, hashB: string): number {
-  const a = Buffer.from(hashA, "hex");
-  const b = Buffer.from(hashB, "hex");
-  let dot = 0, magA = 0, magB = 0;
-
-  for (let i = 0; i < a.length; i++) {
-    dot += a[i] * b[i];
-    magA += a[i] ** 2;
-    magB += b[i] ** 2;
-  }
-
-  return dot / (Math.sqrt(magA) * Math.sqrt(magB));
-}
+export const cosineSimilarity = (a: number[], b: number[]) => {
+  const dot = a.reduce((sum, ai, i) => sum + ai * b[i], 0);
+  const normA = Math.sqrt(a.reduce((sum, ai) => sum + ai * ai, 0));
+  const normB = Math.sqrt(b.reduce((sum, bi) => sum + bi * bi, 0));
+  return (dot / (normA * normB)) * 100;
+};

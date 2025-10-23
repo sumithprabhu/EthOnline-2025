@@ -1,10 +1,15 @@
 // src/lib/queue.ts
 import { Queue, Worker, Job } from "bullmq";
 import IORedis from "ioredis";
-import { processProject } from "@/workers/processFingerprint";
+import { processProject } from "../workers/processFingerprint";
 import { config } from "./config";
+import { RedisOptions } from "ioredis";
 
-const connection = new IORedis(process.env.REDIS_URL || "redis://127.0.0.1:6379");
+const redisOptions: RedisOptions = {
+  maxRetriesPerRequest: null, // ✅ Required by BullMQ
+};
+
+const connection = new IORedis(process.env.REDIS_URL || "redis://127.0.0.1:6379", redisOptions);
 
 // Main job queue
 export const projectQueue = new Queue("projectQueue", { connection });

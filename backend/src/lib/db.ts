@@ -1,21 +1,32 @@
 // src/lib/db.ts
 import mongoose from "mongoose";
-import { config } from "./config";
+import dotenv from "dotenv";
 
-if (!config.MONGO_URI) {
-  throw new Error("❌ MONGO_URI not found in environment variables");
-}
+dotenv.config({ path: ".env" }); // make sure env is loaded before connecting
 
 let cached = (global as any).mongoose || { conn: null, promise: null };
 
 export const connectDB = async () => {
   if (cached.conn) return cached.conn;
 
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(config.MONGO_URI, {
-      dbName: "proof_of_build",
-    });
+  const mongoUri = process.env.MONGO_URI;
+  if (!mongoUri) {
+    console.error("❌ MONGO_URI not found in environment variables");
+    throw new Error("❌ MONGO_URI not found in environment variables");
   }
-  cached.conn = await cached.promise;
-  return cached.conn;
+
+  try {
+    cached.promise =
+      cached.promise ||
+      mongoose.connect(mongoUri, {
+        dbName: "proof_of_build",
+      });
+
+    cached.conn = await cached.promise;
+    console.log("✅ MongoDB connected successfully");
+    return cached.conn;
+  } catch (err) {
+    console.error("❌ MongoDB connection failed:", err);
+    throw err;
+  }
 };

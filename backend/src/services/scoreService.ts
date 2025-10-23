@@ -1,7 +1,7 @@
 // src/services/scoreService.ts
-import Fingerprint from "@/models/Fingerprint";
-import Project from "@/models/Project";
-import { connectDB } from "@/lib/db";
+import Fingerprint from "../models/Fingerprint";
+import Project from "../models/Project";
+import { connectDB } from "../lib/db";
 
 export async function calculateSimilarity(projectId: string) {
   await connectDB();

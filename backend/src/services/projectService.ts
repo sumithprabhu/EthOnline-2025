@@ -1,6 +1,6 @@
 // src/services/projectService.ts
-import Project from "@/models/Project";
-import { connectDB } from "@/lib/db";
+import Project from "../models/Project";
+import { connectDB } from "../lib/db";
 
 export async function updateProjectStatus(
   projectId: string,

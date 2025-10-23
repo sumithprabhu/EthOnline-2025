@@ -1,6 +1,6 @@
 // src/api/proofs/[id]/route.ts
 import { NextResponse } from "next/server";
-import { getProofByProjectId } from "@/services/proofService";
+import { getProofByProjectId } from "../../../../services/proofService";
 
 interface Params {
   params: { id: string };
