@@ -1,8 +1,8 @@
 // src/services/proofService.ts
 import crypto from "crypto";
-import { connectDB } from "@/lib/db";
-import Proof from "@/models/Proof";
-import Fingerprint from "@/models/Fingerprint";
+import { connectDB } from "../lib/db";
+import Proof from "../models/Proof";
+import Fingerprint from "../models/Fingerprint";
 
 export async function generateProof(projectId: string) {
   await connectDB();

@@ -1,8 +1,8 @@
 // src/api/projects/register/route.ts
 import { NextResponse } from "next/server";
-import Project from "@/models/Project";
-import { connectDB } from "@/lib/db";
-import { projectQueue } from "@/lib/queue";
+import Project from "../../../../models/Project";
+import { connectDB } from "../../../../lib/db";
+import { projectQueue } from "../../../../lib/queue";
 
 export async function POST(req: Request) {
   try {

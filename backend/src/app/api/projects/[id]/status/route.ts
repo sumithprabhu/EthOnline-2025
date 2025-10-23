@@ -1,7 +1,7 @@
 // src/api/projects/[id]/status/route.ts
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
-import Project from "@/models/Project";
+import { connectDB } from "../../../../../lib/db";
+import Project from "../../../../../models/Project";
 
 interface Params {
   params: { id: string };
